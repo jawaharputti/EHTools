@@ -1,0 +1,78 @@
+#!/bin/bash
+
+CE="\033[0m"
+RS="\033[1;31m"
+YS="\033[1;33m"
+N="\033[1;37m"
+
+if [[ $EUID -ne 0 ]]
+then
+   sleep 1
+   echo -e "["$RS"*"$CE"] "$RS"This script must be run as root!"$CE"" 1>&2
+   sleep 1
+   exit
+fi
+
+if [[ $1 = "--help" || $1 = "-h" ]]
+then
+echo -e "Usage: ehtkey [option] <arguments>"
+echo -e
+echo -e "  -c, --change <old_key> <new_key>  Change ehtools config key."
+echo -e "  -h, --help                        Give this help list."
+exit
+
+elif [[ $1 = "--change" || $1 = "-c" ]]
+then
+if [[ $2 = "" ]]
+then
+echo -e "Usage: ehtkey $1 <old_key> <new_key>"
+exit
+fi
+if [[ $3 = "" ]]
+then
+echo -e "Usage: ehtkey $1 <old_key> <new_key>"
+exit
+fi
+if [[ $2 != "$(cat /root/ehtools/etc/.config)" ]]
+then
+sleep 2
+echo -e "Error, incorrect old ehtools config key!"
+sleep 2
+exit
+else
+sleep 2
+{
+cd /root/ehtools/lib
+chmod +x libdec
+passcode="$(cat /root/ehtools/etc/.config)"
+echo $passcode | ./libdec
+cd /root/ehtools/lib
+chmod +x libunconf
+passcode="$(cat /root/ehtools/etc/.config)"
+echo $passcode | ./libunconf
+rm /etc/ehtools/.config
+rm /root/ehtools/etc/.config
+echo "$3" >> /root/ehtools/etc/.config
+cd /root/ehtools/lib
+chmod +x libconf
+passcode="$(cat /root/ehtools/etc/.config)"
+echo $passcode | ./libconf
+cd /root/ehtools/lib
+chmod +x libenc
+passcode="$(cat /root/ehtools/etc/.config)"
+echo $passcode | ./libenc
+cd /root
+} &> /dev/null
+echo -e "Success, ehtools config key changed!"
+sleep 0.5
+echo -e "New ehtools config key: $3"
+sleep 2
+exit
+fi
+fi
+
+echo -e "Usage: ehtkey [option] <arguments>"
+echo -e
+echo -e "  -c, --change <old_key> <new_key>  Change ehtools config key."
+echo -e "  -h, --help                        Give this help list."
+exit

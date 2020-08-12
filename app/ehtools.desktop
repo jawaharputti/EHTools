@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=ehtools
+Encoding=UTF-8
+Exec=bash-wrapper ehtools
+Icon=/etc/ehtools/app/ehtools.png
+StartupNotify=false
+Terminal=true
+Type=Application
+Categories=01-info-gathering;02-vulnerability-analysis;03-webapp-analysis;04-database-assessment;05-password-attacks;06-wireless-attacks;07-reverseengineer;08-exploitation-tools;09-sniffing-spoofing;10-maintaining-access;11-forensics;12-reporting;13-social-engineering-tools;
+X-Kali-Package=ehtools
